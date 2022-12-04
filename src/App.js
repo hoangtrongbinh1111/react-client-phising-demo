@@ -31,21 +31,21 @@ function App() {
   const handleClickTrain = () => {
     socket.current.emit("start_train_model", {
       sid: "261599",
-      labId: "c075397d-daa2-4ae8-a7d9-2568ea23d8b0",
+      labId: "0cb3c269-5ffc-4e49-bb36-a1d5cfcce7b7",
     });
   };
 
   const handleClickTest = () => {
     socket.current.emit('start_test_model',{
       sid: "261599",
-      labId : 'c075397d-daa2-4ae8-a7d9-2568ea23d8b0',
+      labId : '0cb3c269-5ffc-4e49-bb36-a1d5cfcce7b7',
     })
   }
 
   const handleClickInfer = () => {
     socket.current.emit('start_infer_model',{
       sid: "261599",
-      labId : 'c075397d-daa2-4ae8-a7d9-2568ea23d8b0',
+      labId : '0cb3c269-5ffc-4e49-bb36-a1d5cfcce7b7',
     })
   }
 
