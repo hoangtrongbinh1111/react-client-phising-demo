@@ -13,6 +13,12 @@ function App() {
       console.log("connected to server");
     });
 
+
+    socket.current.on('send_preprocess_result_261599',(data)=>{
+      console.log((121221,data));
+    })
+    
+
     socket.current.on("send_training_result_261599", (data) => {
       console.log(121221, data);
     });
@@ -26,19 +32,32 @@ function App() {
     })
   }, []);
  
-  
+
+
+  const handlePreprocess = () => {
+    socket.current.emit('start_preprocess_model',{
+      sid: '261599',
+      datasetId: 'a6cc7a6d-1556-46da-8b73-60d4a3dd1896',
+      // labId: '2a414760-fbb5-4374-962d-c29bee9730ad'
+    })
+  }
+
   const handleClickTrain = () => {
     socket.current.emit("start_train_model", {
       sid: "261599",
+      datasetId: 'a6cc7a6d-1556-46da-8b73-60d4a3dd1896',
       labId: document.getElementById("labElement").value,
     });
   };
+
+
 
   const handleClickTest = () => {
     socket.current.emit('start_test_model',{
       sid: "261599",
       labId : document.getElementById("labElement").value,
-      epoch_selected: document.getElementById("epochElement").value
+      epoch_selected: document.getElementById("epochElement").value,
+      datasetId: 'a6cc7a6d-1556-46da-8b73-60d4a3dd1896'
     })
   }
 
@@ -50,13 +69,18 @@ function App() {
     })
   }
 
+ 
   return (
     <div className="App">
       <p>Socket.io app</p>
       <input type="text" id="labElement" placeholder="Lab Id" />
       <input type="text" id="epochElement" placeholder="Epoch" />
 
-      <button type="button" onClick={handleClickTrain}>
+      <button type="button" onClick={handlePreprocess}>
+        Preeee
+      </button>
+
+      <button type="button" onClick={handleClickTrain} style={{marginLeft: 5 + 'px'}}>
         Emit a time message
       </button>
 
@@ -67,8 +91,12 @@ function App() {
       <button type= "button" onClick={handleClickInfer} style= {{marginLeft: 5 + 'px'}}>
         INFERRRRRRR
       </button>
+
+    
     </div>
+    
   );
 }
 
 export default App;
+
