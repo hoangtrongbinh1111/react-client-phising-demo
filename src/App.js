@@ -27,31 +27,34 @@ function App() {
   }, []);
  
   
-
   const handleClickTrain = () => {
     socket.current.emit("start_train_model", {
       sid: "261599",
-      labId: "0cb3c269-5ffc-4e49-bb36-a1d5cfcce7b7",
+      labId: document.getElementById("labElement").value,
     });
   };
 
   const handleClickTest = () => {
     socket.current.emit('start_test_model',{
       sid: "261599",
-      labId : '0cb3c269-5ffc-4e49-bb36-a1d5cfcce7b7',
+      labId : document.getElementById("labElement").value,
+      epoch_selected: document.getElementById("epochElement").value
     })
   }
 
   const handleClickInfer = () => {
     socket.current.emit('start_infer_model',{
       sid: "261599",
-      labId : '0cb3c269-5ffc-4e49-bb36-a1d5cfcce7b7',
+      labId : document.getElementById("labElement").value,
+      epoch_selected: document.getElementById("epochElement").value
     })
   }
 
   return (
     <div className="App">
       <p>Socket.io app</p>
+      <input type="text" id="labElement" placeholder="Lab Id" />
+      <input type="text" id="epochElement" placeholder="Epoch" />
 
       <button type="button" onClick={handleClickTrain}>
         Emit a time message
