@@ -8,7 +8,7 @@ function App() {
   const [labData, setLabData] = useState("173b6a00-f818-4b13-a92e-445bd984503c");
 
   useEffect(() => {
-    socket.current = io("http://c2d8-117-4-240-104.ngrok.io");
+    socket.current = io("http://9382-117-4-240-104.ngrok.io");
 
     socket.current.on("connect", () => {
       console.log("connected to server");
@@ -48,7 +48,8 @@ function App() {
     // setLabData(document.getElementById("labElement").value);
     socket.current.emit('start_infer_model',{
       labId : document.getElementById("labElement").value,
-      epoch_selected: document.getElementById("epochElement").value
+      epoch_selected: document.getElementById("epochElement").value,
+      url: document.getElementById("urlElement").value,
     })
   }
 
@@ -64,6 +65,7 @@ function App() {
       <input type="text" id="labElement" placeholder="Lab Id" />
       <input type="text" id="datasetElement" placeholder="Dataset Id" />
       <input type="text" id="epochElement" placeholder="Epoch" />
+      <input type="text" id="urlElement" placeholder="URL sample" />
 
       <button type="button" onClick={handleClickTrain} style={{marginLeft: 5 + 'px'}}>
         Train
