@@ -5,10 +5,10 @@ import { io } from "socket.io-client";
 
 function App() {
   const socket = useRef();
-  const [labData, setLabData] = useState("173b6a00-f818-4b13-a92e-445bd984503c");
+  const [labData, setLabData] = useState("06a9c3b0-d574-4983-9045-412e773b3ea4");
 
   useEffect(() => {
-    socket.current = io("http://9382-117-4-240-104.ngrok.io");
+    socket.current = io("0.0.0.0:6789", {pingTimeout: 999999999999999999});
 
     socket.current.on("connect", () => {
       console.log("connected to server");
@@ -32,6 +32,7 @@ function App() {
     socket.current.emit("start_train_model", {
       datasetId: document.getElementById("datasetElement").value,
       labId: document.getElementById("labElement").value,
+      sid: socket.current.id
     });
   };
 
@@ -39,8 +40,9 @@ function App() {
     // setLabData(document.getElementById("labElement").value);
     socket.current.emit('start_test_model',{
       labId : document.getElementById("labElement").value,
+      datasetId: document.getElementById("datasetElement").value,
       epoch_selected: document.getElementById("epochElement").value,
-      datasetId: document.getElementById("datasetElement").value
+      sid: socket.current.id
     })
   }
 
@@ -50,8 +52,44 @@ function App() {
       labId : document.getElementById("labElement").value,
       epoch_selected: document.getElementById("epochElement").value,
       url: document.getElementById("urlElement").value,
+      sid: socket.current.id
     })
   }
+
+  const [selectedFile, setSelectedFile] = useState();
+
+	const [isFilePicked, setIsFilePicked] = useState(false);
+
+
+	const changeHandler = (event) => {
+
+		setSelectedFile(event.target.files[0]);
+
+		setIsFilePicked(true);
+
+	};
+
+	const handleSubmission = () => {
+		const formData = new FormData();
+		formData.append('files', selectedFile);
+    formData.append('dataName', "Binh bo");
+    formData.append('userUpload', "1234");
+		fetch(
+			'http://localhost:6789/api/v1/dataset/upload',
+			{
+				method: 'POST',
+
+				body: formData,
+			}
+		)
+			.then((response) => response.json())
+			.then((result) => {
+				console.log('Success:', result);
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+	};
 
  
   return (
@@ -78,6 +116,40 @@ function App() {
       <button type= "button" onClick={handleClickInfer} style= {{marginLeft: 5 + 'px'}}>
         Infer
       </button>
+
+      {/* Upload file */}
+      <div>
+        <input type="file" name="files" onChange={changeHandler} multiple />
+        {isFilePicked ? (
+          <div>
+
+            <p>Filename: {selectedFile.name}</p>
+
+            <p>Filetype: {selectedFile.type}</p>
+
+            <p>Size in bytes: {selectedFile.size}</p>
+
+            <p>
+
+              lastModifiedDate:{' '}
+
+              {selectedFile.lastModifiedDate.toLocaleDateString()}
+
+            </p>
+
+          </div>
+
+        ) : (
+
+          <p>Select a file to show details</p>
+        )}
+
+        <div>
+          <button onClick={handleSubmission}>Submit</button>
+
+        </div>
+
+        </div>
 
     
     </div>
