@@ -5,10 +5,10 @@ import { io } from "socket.io-client";
 
 function App() {
   const socket = useRef();
-  const [labData, setLabData] = useState("06a9c3b0-d574-4983-9045-412e773b3ea4");
+  const [labData, setLabData] = useState("bc6790b7-4d99-4a57-8f1e-660f8b178907");
 
   useEffect(() => {
-    socket.current = io("0.0.0.0:6789", {pingTimeout: 999999999999999999});
+    socket.current = io("0.0.0.0:6789", {pingTimeout: 9999999999999});
 
     socket.current.on("connect", () => {
       console.log("connected to server");
@@ -23,6 +23,10 @@ function App() {
     })
 
     socket.current.on(`send_infering_result_${labData}`,(data) => {
+      console.log(data);
+    })
+
+    socket.current.on(`send_reviewing_dataset_result_${labData}`,(data) => {
       console.log(data);
     })
   }, []);
@@ -52,6 +56,14 @@ function App() {
       labId : document.getElementById("labElement").value,
       epoch_selected: document.getElementById("epochElement").value,
       url: document.getElementById("urlElement").value,
+      sid: socket.current.id
+    })
+  }
+
+  const handleClickUpdateDataset = () => {
+    socket.current.emit('start_update_detail_dataset',{
+      labId : document.getElementById("labElement").value,
+      datasetId : document.getElementById("datasetElement").value,
       sid: socket.current.id
     })
   }
@@ -115,6 +127,10 @@ function App() {
 
       <button type= "button" onClick={handleClickInfer} style= {{marginLeft: 5 + 'px'}}>
         Infer
+      </button>
+
+      <button type= "button" onClick={handleClickUpdateDataset} style= {{marginLeft: 5 + 'px'}}>
+        Update dataset
       </button>
 
       {/* Upload file */}
