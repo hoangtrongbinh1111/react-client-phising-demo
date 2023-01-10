@@ -5,8 +5,8 @@ import { io } from "socket.io-client";
 
 function App() {
   const socket = useRef();
-  const [labData, setLabData] = useState("bc6790b7-4d99-4a57-8f1e-660f8b178907");
-
+  const [labData, setLabData] = useState("06a9c3b0-d574-4983-9045-412e773b3ea4");
+  
   useEffect(() => {
     socket.current = io("0.0.0.0:6789", {pingTimeout: 9999999999999});
 
@@ -26,7 +26,7 @@ function App() {
       console.log(data);
     })
 
-    socket.current.on(`send_reviewing_dataset_result_${labData}`,(data) => {
+    socket.current.on(`send_comparing_result_${labData}`,(data) => {
       console.log(data);
     })
   }, []);
@@ -64,6 +64,16 @@ function App() {
     socket.current.emit('start_update_detail_dataset',{
       labId : document.getElementById("labElement").value,
       datasetId : document.getElementById("datasetElement").value,
+      sid: socket.current.id
+    })
+  }
+
+  const handleClickCompare = () => {
+    socket.current.emit('start_compare_model',{
+      labId : document.getElementById("labElement").value,
+      datasetId: document.getElementById("datasetElement").value,
+      sampleId: document.getElementById("sampleElement").value,
+      epoch_selected: document.getElementById("epochElement").value,
       sid: socket.current.id
     })
   }
@@ -114,6 +124,7 @@ function App() {
       </ul>
       <input type="text" id="labElement" placeholder="Lab Id" />
       <input type="text" id="datasetElement" placeholder="Dataset Id" />
+      <input type="text" id="sampleElement" placeholder="Sample Id" />
       <input type="text" id="epochElement" placeholder="Epoch" />
       <input type="text" id="urlElement" placeholder="URL sample" />
 
@@ -131,6 +142,10 @@ function App() {
 
       <button type= "button" onClick={handleClickUpdateDataset} style= {{marginLeft: 5 + 'px'}}>
         Update dataset
+      </button>
+
+      <button type = "button" onClick= {handleClickCompare} style={{marginLeft: 5 + 'px'}}>
+        Compare Model
       </button>
 
       {/* Upload file */}
