@@ -26,7 +26,11 @@ function App() {
       console.log(data);
     })
 
-    socket.current.on(`send_comparing_result_${labData}`,(data) => {
+    socket.current.on(`send_comparing_result_phase_testing_${labData}`,(data) => {
+      console.log(data);
+    })
+
+    socket.current.on(`send_comparing_result_phase_infering_${labData}`,(data) => {
       console.log(data);
     })
   }, []);
@@ -69,11 +73,19 @@ function App() {
   }
 
   const handleClickCompare = () => {
-    socket.current.emit('start_compare_model',{
+    socket.current.emit('start_compare_model_phase_testing',{
       labId : document.getElementById("labElement").value,
       datasetId: document.getElementById("datasetElement").value,
       sampleId: document.getElementById("sampleElement").value,
-      epoch_selected: document.getElementById("epochElement").value,
+      sid: socket.current.id
+    })
+  }
+
+  const handleClickCompareInfer = () => {
+    socket.current.emit('start_compare_model_phase_infering',{
+      labId : document.getElementById("labElement").value,
+      url: document.getElementById("urlElement").value,
+      sampleId: document.getElementById("sampleElement").value,
       sid: socket.current.id
     })
   }
@@ -145,7 +157,10 @@ function App() {
       </button>
 
       <button type = "button" onClick= {handleClickCompare} style={{marginLeft: 5 + 'px'}}>
-        Compare Model
+        Compare Model In Testing
+      </button>
+      <button type = "button" onClick= {handleClickCompareInfer} style={{marginLeft: 5 + 'px'}}>
+        Compare Model In Infering
       </button>
 
       {/* Upload file */}
